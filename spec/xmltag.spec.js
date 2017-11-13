@@ -15,6 +15,14 @@ const tests = [
         name: "without attrs",
         args: [{}, "hello"],
         result: '<svg >hello</svg>'
+      }, {
+        name: "nested",
+        args: [{one: "two", three: "four"}, svg({five: "six"}, "hello")],
+        result: '<svg one="two" three="four"><svg five="six">hello</svg></svg>'
+      }, {
+        name: "without children",
+        args: [{one:"two"}],
+        result: '<svg one="two"/>'
       }
     ]
   }
