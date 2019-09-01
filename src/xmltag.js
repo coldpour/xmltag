@@ -1,17 +1,27 @@
-function spreadAttrs(attrs) {
-  return Object.keys(attrs).map(key => {
-    const str = `${key}="${attrs[key]}"`;
-    return str;
-  }).join(" ");
+const spreadAttrs = attrs =>
+  Object.keys(attrs).map(key => `${key}="${attrs[key]}"`).join(' ')
+
+const renderAttrs = attrs => attrs ? ` ${spreadAttrs(attrs)}` : ''
+
+const isObject = o => typeof o === 'object' && o != null
+
+const parseArgs = args => {
+  const [firstArg, ...restArgs] = args
+  const hasAttrs = isObject(firstArg)
+
+  return {
+    attrs: hasAttrs ? firstArg : undefined,
+    children: hasAttrs ? restArgs : args
+  }
 }
 
-function tag(name) {
-  return function(attrs, ...children) {
-    return `<${name} ${spreadAttrs(attrs)}`
-      + (children && children.length > 0
-         ? `>${children.join("")}</${name}>`
-         : '/>');
-  };
+const tag = name => (...args) => {
+  const { attrs, children } = parseArgs(args)
+  const hasChildren = children.length > 0
+
+  return `<${name}${renderAttrs(attrs)}` +
+    (hasChildren ? '' : ' /') + '>' +
+    (hasChildren ? `${children.join('')}</${name}>` : '')
 }
 
-module.exports = tag;
+module.exports = tag
